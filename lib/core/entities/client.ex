@@ -9,6 +9,7 @@ defmodule Core.Entities.Client do
     field :password_hash, :string
 
     has_one :address, Core.Entities.Address
+    has_many :products, Core.Entities.Product
     timestamps()
   end
 
