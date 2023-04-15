@@ -1,5 +1,6 @@
 defmodule Core do
   alias Core.Repositories.Client, as: ClientRepository
+  alias Core.Repositories.Address, as: AddressRepository
 
   @moduledoc """
   Core keeps the contexts that define your domain
@@ -10,4 +11,6 @@ defmodule Core do
   """
 
   defdelegate create_user(params), to: ClientRepository, as: :create
+
+  defdelegate create_address(params), to: AddressRepository, as: :create
 end

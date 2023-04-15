@@ -8,6 +8,7 @@ defmodule Core.Entities.Client do
     field :password, :string, virtual: true
     field :password_hash, :string
 
+    has_one :address, Core.Entities.Address
     timestamps()
   end
 
