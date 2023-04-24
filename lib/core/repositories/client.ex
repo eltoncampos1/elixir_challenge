@@ -31,15 +31,21 @@ defmodule Core.Repositories.Client do
   def signup(params) do
     Multi.new()
     |> Multi.run(:client, fn _repo, _any ->
-      create(params.client)
+      create(params["client"])
     end)
-    |> Multi.run(:address, fn _repo, %{client: %{id: id}} ->
+    |> Multi.run(:address, fn _repo, %{client: client} ->
       params
-      |> build_address_params(id)
+      |> build_address_params(client)
       |> Core.create_address()
     end)
     |> Repo.transaction()
+    |> handle_response()
+    |> IO.inspect()
   end
 
-  defp build_address_params(%{address: address}, id), do: Map.put(address, :client_id, id)
+
+  defp handle_response({:ok, %{address: _address, client: client}}), do: {:ok, client}
+  defp handle_response({:error, _entity, changeset, _}), do: {:error, changeset}
+
+  defp build_address_params(%{"address" => address}, client), do: Map.put(address, "client", client)
 end

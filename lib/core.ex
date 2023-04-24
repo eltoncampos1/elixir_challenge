@@ -16,4 +16,6 @@ defmodule Core do
   defdelegate create_product(params), to: ProductRepository, as: :create
 
   defdelegate get_client_by_id(id), to: ClientRepository, as: :get_by_id!
+
+  defdelegate signup(params), to: ClientRepository, as: :signup
 end
