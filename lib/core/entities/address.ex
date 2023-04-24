@@ -19,8 +19,12 @@ defmodule Core.Entities.Address do
     |> cast(params, @required)
     |> validate_required(@required)
     |> validate_length(:cep, is: 8)
-    |> put_assoc(:client, params.client)
+    |> put_assoc(:client, cast_client_from_params(params))
     |> foreign_key_constraint(:client_id)
     |> unique_constraint(:client_id)
   end
+
+
+  defp cast_client_from_params(%{"client" => client}), do: client
+  defp cast_client_from_params(%{client: client}), do: client
 end
