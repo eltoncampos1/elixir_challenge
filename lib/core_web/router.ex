@@ -5,6 +5,10 @@ defmodule CoreWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug CoreWeb.Auth.Pipeline
+  end
+
   scope "/api", CoreWeb do
     pipe_through :api
   end

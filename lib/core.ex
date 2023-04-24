@@ -11,7 +11,9 @@ defmodule Core do
   if it comes from the database, an external API or others.
   """
 
-  defdelegate create_user(params), to: ClientRepository, as: :create
+  defdelegate create_client(params), to: ClientRepository, as: :create
   defdelegate create_address(params), to: AddressRepository, as: :create
   defdelegate create_product(params), to: ProductRepository, as: :create
+
+  defdelegate get_client_by_id(id), to: ClientRepository, as: :get_by_id!
 end

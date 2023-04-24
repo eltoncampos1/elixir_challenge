@@ -40,6 +40,10 @@ config :phoenix, :json_library, Jason
 
 config :money, default_currency: :BRL
 
+config :core, Core.Auth.Guardian,
+  issuer: "core",
+  secret_key: "Wox8dAl7M0z8FpOCJNMntb88g1dtWVvK1OB8oPr+XxYYWZqC8gbPiVnZwAm0vvk9"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

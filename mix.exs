@@ -44,7 +44,8 @@ defmodule Core.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:argon2_elixir, "~> 3.0"},
-      {:money, "~> 1.12"}
+      {:money, "~> 1.12"},
+      {:guardian, "~> 2.0"}
     ]
   end
 
