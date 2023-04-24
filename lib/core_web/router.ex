@@ -11,6 +11,8 @@ defmodule CoreWeb.Router do
 
   scope "/api", CoreWeb do
     pipe_through :api
+
+    post "/sighup", ClientController, :signup
   end
 
   # Enables the Swoosh mailbox preview in development.
