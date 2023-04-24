@@ -1,7 +1,7 @@
 defmodule Core.Entities.Product do
   use Core.BaseSchema
 
-  @required [:price, :reference_image, :description, :client_id]
+  @required [:price, :reference_image, :description]
 
   schema "products" do
     field :price, Money.Ecto.Amount.Type
@@ -17,6 +17,7 @@ defmodule Core.Entities.Product do
     |> cast(params, @required)
     |> validate_required(@required)
     |> validate_length(:description, min: 20)
+    |> put_assoc(:client, params.client)
     |> foreign_key_constraint(:client_id)
   end
 end

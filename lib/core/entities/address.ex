@@ -1,7 +1,7 @@
 defmodule Core.Entities.Address do
   use Core.BaseSchema
 
-  @required [:cep, :state, :city, :number, :client_id]
+  @required [:cep, :state, :city, :number]
 
   schema "addresses" do
     field :cep, :string
@@ -19,6 +19,8 @@ defmodule Core.Entities.Address do
     |> cast(params, @required)
     |> validate_required(@required)
     |> validate_length(:cep, is: 8)
+    |> put_assoc(:client, params.client)
     |> foreign_key_constraint(:client_id)
+    |> unique_constraint(:client_id)
   end
 end
