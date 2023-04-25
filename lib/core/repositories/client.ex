@@ -40,12 +40,11 @@ defmodule Core.Repositories.Client do
     end)
     |> Repo.transaction()
     |> handle_response()
-    |> IO.inspect()
   end
-
 
   defp handle_response({:ok, %{address: _address, client: client}}), do: {:ok, client}
   defp handle_response({:error, _entity, changeset, _}), do: {:error, changeset}
 
-  defp build_address_params(%{"address" => address}, client), do: Map.put(address, "client", client)
+  defp build_address_params(%{"address" => address}, client),
+    do: Map.put(address, "client", client)
 end
