@@ -24,7 +24,6 @@ defmodule Core.Entities.Address do
     |> unique_constraint(:client_id)
   end
 
-
   defp cast_client_from_params(%{"client" => client}), do: client
   defp cast_client_from_params(%{client: client}), do: client
 end
