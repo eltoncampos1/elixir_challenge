@@ -19,7 +19,7 @@ defmodule CoreWeb.ClientControllerTest do
       response =
         conn
         |> post(Routes.client_path(conn, :signup), params)
-        |> json_response(200)
+        |> json_response(201)
 
       assert %{"email" => "valid@email.com", "id" => _user_id} = response
     end
