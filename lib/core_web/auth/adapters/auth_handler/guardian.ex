@@ -1,9 +1,11 @@
-defmodule CoreWeb.Auth.Guardian do
+defmodule CoreWeb.Auth.Adapters.AuthHandler.Guardian do
+  @behaviour CoreWeb.Auth.Ports.AuthHandler
   use Guardian, otp_app: :core
 
   alias Core.Entities.Client
   alias Core.Repositories.Client, as: ClientRepository
 
+  @spec authenticate(map) :: {:error, :unauthorized} | {:ok, Core.Entities.Client.t(), binary}
   def authenticate(%{"email" => email, "password" => password}) do
     case ClientRepository.authenticate(email, password) do
       {:ok, client} -> create_token(client)

@@ -40,9 +40,12 @@ config :phoenix, :json_library, Jason
 
 config :money, default_currency: :BRL
 
-config :core, Core.Auth.Guardian,
+config :core, CoreWeb.Auth.Adapters.AuthHandler.Guardian,
   issuer: "core",
-  secret_key: "Wox8dAl7M0z8FpOCJNMntb88g1dtWVvK1OB8oPr+XxYYWZqC8gbPiVnZwAm0vvk9"
+  secret_key: System.get_env("GUARDIAN_AUTH_TOKEN")
+
+# ADAPTERS
+config :core, CoreWeb.Auth.Ports.AuthHandler, adapter: CoreWeb.Auth.Adapters.AuthHandler.Guardian
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
