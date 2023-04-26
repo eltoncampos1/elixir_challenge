@@ -6,7 +6,7 @@ defmodule CoreWeb.ClientController do
   def signup(conn, params) do
     with {:ok, client} <- Core.signup(params) do
       conn
-      |> put_status(:ok)
+      |> put_status(201)
       |> render("new.json", %{client: client})
     end
   end
