@@ -1,6 +1,6 @@
 defmodule Core.Factory do
   use ExMachina.Ecto, repo: Core.Repo
-  alias Core.Entities.Client
+  alias Core.Entities.{Address, Client}
 
   @default_passwords for i <- 1..5, do: "password-#{i}"
   @default_hashed_passwords @default_passwords
@@ -21,7 +21,17 @@ defmodule Core.Factory do
       email: "core@email.com",
       password: password,
       name: "core_user",
-      password_hash: hashe_password
+      password_hash: hashe_password,
+      address: build(:address)
+    }
+  end
+
+  def address_factory do
+    %Address{
+      cep: "01001000",
+      state: "SP",
+      city: "SP",
+      number: "0"
     }
   end
 end

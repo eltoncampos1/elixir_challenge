@@ -12,7 +12,7 @@ defmodule CoreWeb.SessionController do
     with {:ok, %Client{} = client, token} <- AuthHandler.authenticate(params) do
       conn
       |> put_status(201)
-      |> render("new.json", %{client: client, token: token})
+      |> render("auth.json", %{client: client, token: token})
     end
   end
 
