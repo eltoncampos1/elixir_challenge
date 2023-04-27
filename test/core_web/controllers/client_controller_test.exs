@@ -237,8 +237,7 @@ defmodule CoreWeb.ClientControllerTest do
         |> get(Routes.client_path(conn, :edit, id), %{invalid_params: "invalid"})
         |> json_response(201)
 
-      assert %{"email" => ^email, "id" => ^id, "name" => ^name} =
-               response
+      assert %{"email" => ^email, "id" => ^id, "name" => ^name} = response
     end
   end
 

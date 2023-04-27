@@ -177,8 +177,8 @@ defmodule CoreTest do
     end
 
     test "should raise if invalid id is provided" do
-       assert_raise Ecto.NoResultsError, fn -> Core.get_client_by_id!(Ecto.UUID.generate) end
-       assert_raise Ecto.Query.CastError, fn -> Core.get_client_by_id!("invalid") end
+      assert_raise Ecto.NoResultsError, fn -> Core.get_client_by_id!(Ecto.UUID.generate()) end
+      assert_raise Ecto.Query.CastError, fn -> Core.get_client_by_id!("invalid") end
     end
   end
 
@@ -190,14 +190,21 @@ defmodule CoreTest do
     end
 
     test "should return error if invalid id is provided" do
-      assert {:error, :not_found} = Core.get_client_by_id(Ecto.UUID.generate)
+      assert {:error, :not_found} = Core.get_client_by_id(Ecto.UUID.generate())
     end
   end
 
   describe "all_clients/0" do
     test "should be able to return all clients" do
       total = 10
-       for i <- 1..total, do: Core.create_client(%{email: "email-#{i}@email.com", name: "client #{i}", password: "123456"})
+
+      for i <- 1..total,
+          do:
+            Core.create_client(%{
+              email: "email-#{i}@email.com",
+              name: "client #{i}",
+              password: "123456"
+            })
 
       assert [%Client{} | _tail] = clients = Core.all_clients()
       assert length(clients) == total
@@ -205,6 +212,36 @@ defmodule CoreTest do
 
     test "should return empty array in has no clients" do
       assert [] = Core.all_clients()
+    end
+  end
+
+  describe "update_client/2" do
+    test "should be able to update a client" do
+      c_1 = insert(:client)
+      new_params = %{email: "new_email@email.com", name: "new_name"}
+
+      assert {:ok, %Client{} = client} = Core.update_client(c_1, new_params)
+      assert client.email == new_params.email
+      assert client.name == new_params.name
+      assert c_1.id == client.id
+    end
+
+    test "should return error if wrong params are passed" do
+      c_1 = insert(:client)
+      new_params = %{email: "new_email.com", name: "new_name"}
+
+      assert {:error,
+              %Ecto.Changeset{
+                valid?: false,
+                errors: [email: {"has invalid format", [validation: :format]}]
+              }} = Core.update_client(c_1, new_params)
+    end
+
+    test "should return error invalid client are passed" do
+      c_1 = insert(:client)
+      new_params = %{email: "new_email@email.com", name: "new_name"}
+
+      assert_raise Ecto.NoPrimaryKeyValueError, fn ->  Core.update_client(%Client{}, new_params) end
     end
   end
 end
