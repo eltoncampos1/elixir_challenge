@@ -3,6 +3,8 @@ defmodule CoreTest do
   alias Core.Entities
   alias Core.Entities.Client
 
+  import Core.Factory
+
   @valid_client_params %{
     email: "valid@email.com",
     password: "12345678",
@@ -164,6 +166,19 @@ defmodule CoreTest do
                      [count: 20, validation: :length, kind: :min, type: :string]}
                 ]
               }} = Core.create_product(params)
+    end
+  end
+
+  describe "get_client_by_id!/1" do
+    test "should be able to get an valid client given id" do
+      %{id: id, name: name, email: email} = insert(:client)
+
+      assert %Client{id: ^id, name: ^name, email: ^email} = Core.get_client_by_id!(id)
+    end
+
+    test "should raise if invalid id is provided" do
+       assert_raise Ecto.NoResultsError, fn -> Core.get_client_by_id!(Ecto.UUID.generate) end
+       assert_raise Ecto.Query.CastError, fn -> Core.get_client_by_id!("invalid") end
     end
   end
 end
