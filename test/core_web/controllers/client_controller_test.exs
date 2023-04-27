@@ -1,7 +1,8 @@
 defmodule CoreWeb.ClientControllerTest do
+  import Core.Factory
   use CoreWeb.ConnCase, async: true
 
- setup %{conn: conn} do
+  setup %{conn: conn} do
     params = %{email: "valid@email.com", password: "1234567", name: "valid_user"}
     {:ok, client} = Core.create_client(params)
     %{conn: conn, params: params, client: client}
@@ -84,20 +85,36 @@ defmodule CoreWeb.ClientControllerTest do
     end
   end
 
-  # describe "GET index/2" do
-  #   test "Should return all clients", %{conn: conn, client: client} do
+  describe "GET index/2" do
+    test "Should return all clients", %{conn: conn, client: client} do
+      clients = for i <- 1..10, do: insert(:client, %{email: "foo#{i}@bar.com"})
 
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :index))
+        |> json_response(200)
 
+      assert %{
+               "clients" => clients_return
+             } = response
 
-  #       conn
-  #       |> authenticate_user(client)
-  #       |> get(Routes.client_path(conn, :index))
-  #       |> json_response(422)
-  #   end
-  # end
+      assert length(clients_return) == length(clients) + 1
+    end
+
+    test "Should return error if not authenticated ", %{conn: conn} do
+      response =
+        conn
+        |> get(Routes.client_path(conn, :index))
+        |> json_response(401)
+
+      assert %{"error" => "unauthenticated"} = response
+    end
+  end
 
   defp authenticate_user(conn, client) do
-    {:ok, token, _} = Guardian.encode_and_sign(client)
+    {:ok, token, _} = CoreWeb.Auth.Adapters.AuthHandler.Guardian.encode_and_sign(client)
+
     conn
     |> put_req_header("authorization", "Bearer #{token}")
   end
