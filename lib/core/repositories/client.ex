@@ -9,6 +9,12 @@ defmodule Core.Repositories.Client do
     |> Repo.insert()
   end
 
+  def update(client, params) do
+    client
+    |> Client.update_changeset(params)
+    |> Repo.update()
+  end
+
   def index do
     Repo.all(Client)
     |> Repo.preload(:address)

@@ -21,4 +21,6 @@ defmodule Core do
 
   defdelegate all_clients, to: ClientRepository, as: :index
   defdelegate get_client_by_id(id), to: ClientRepository, as: :get_by_id
+
+  defdelegate update_client(client, params), to: ClientRepository, as: :update
 end

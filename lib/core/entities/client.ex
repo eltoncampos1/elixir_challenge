@@ -24,6 +24,13 @@ defmodule Core.Entities.Client do
     |> put_password_hash()
   end
 
+  def update_changeset(client, params) do
+    client
+    |> cast(params, [:email, :name])
+    |> validate_format(:email, ~r/@/)
+    |> unique_constraint(:email)
+  end
+
   defp put_password_hash(
          %Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset
        ) do

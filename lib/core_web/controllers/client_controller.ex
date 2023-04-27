@@ -1,6 +1,6 @@
 defmodule CoreWeb.ClientController do
   use CoreWeb, :controller
-  plug CoreWeb.Plugs.UUIDChecker when action in [:show]
+  plug CoreWeb.Plugs.UUIDChecker when action in [:show, :edit]
 
   action_fallback CoreWeb.FallbackController
 
@@ -25,6 +25,15 @@ defmodule CoreWeb.ClientController do
       conn
       |> put_status(:ok)
       |> render("new.json", client: client)
+    end
+  end
+
+  def edit(conn, %{"id" => client_id} = params) do
+    with {:ok, client} <- Core.get_client_by_id(client_id),
+         {:ok, updated_client} <- Core.update_client(client, params) do
+      conn
+      |> put_status(201)
+      |> render("edit.json", client: updated_client)
     end
   end
 end
