@@ -11,6 +11,19 @@ defmodule Core.Repositories.Client do
 
   def index do
     Repo.all(Client)
+    |> Repo.preload(:address)
+  end
+
+  def get_by_id(id) do
+    case Repo.get(Client, id) do
+      %Client{} = client ->
+        client = client |> Repo.preload(:address)
+
+        {:ok, client}
+
+      _ ->
+        {:error, :not_found}
+    end
   end
 
   def get_by_id!(id) do
@@ -46,7 +59,9 @@ defmodule Core.Repositories.Client do
     |> handle_response()
   end
 
-  defp handle_response({:ok, %{address: _address, client: client}}), do: {:ok, client}
+  defp handle_response({:ok, %{address: _address, client: client}}),
+    do: {:ok, client |> Repo.preload(:address)}
+
   defp handle_response({:error, _entity, changeset, _}), do: {:error, changeset}
 
   defp build_address_params(%{"address" => address}, client),

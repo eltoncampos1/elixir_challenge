@@ -25,7 +25,7 @@ defmodule CoreWeb.Auth.Adapters.AuthHandler.Guardian do
   end
 
   def resource_from_claims(%{"sub" => id}) do
-    case Core.get_client_by_id(id) do
+    case Core.get_client_by_id!(id) do
       %Client{} = client -> {:ok, client}
       _ -> {:error, :resource_not_found}
     end
