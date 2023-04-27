@@ -10,4 +10,12 @@ defmodule CoreWeb.ClientController do
       |> render("new.json", %{client: client})
     end
   end
+
+  def index(conn, _params) do
+    with clients <- Core.all_clients() do
+      conn
+      |> put_status(:ok)
+      |> render("index.json", clients: clients)
+    end
+  end
 end

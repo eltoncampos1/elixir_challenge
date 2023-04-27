@@ -9,6 +9,10 @@ defmodule Core.Repositories.Client do
     |> Repo.insert()
   end
 
+  def index do
+    Repo.all(Client)
+  end
+
   def get_by_id!(id) do
     Repo.get!(Client, id)
   end
