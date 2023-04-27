@@ -181,4 +181,16 @@ defmodule CoreTest do
        assert_raise Ecto.Query.CastError, fn -> Core.get_client_by_id!("invalid") end
     end
   end
+
+  describe "get_client_by_id/1" do
+    test "should be able to get an valid client given id" do
+      %{id: id, name: name, email: email} = insert(:client)
+
+      assert {:ok, %Client{id: ^id, name: ^name, email: ^email}} = Core.get_client_by_id(id)
+    end
+
+    test "should return error if invalid id is provided" do
+      assert {:error, :not_found} = Core.get_client_by_id(Ecto.UUID.generate)
+    end
+  end
 end
