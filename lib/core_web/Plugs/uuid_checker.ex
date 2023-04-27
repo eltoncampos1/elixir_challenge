@@ -11,7 +11,7 @@ defmodule CoreWeb.Plugs.UUIDChecker do
       _ ->
         conn
         |> put_resp_content_type("Application/Json")
-        |> resp(401, Jason.encode!(%{"errors" => %{"detail" => "invalid format"}}))
+        |> resp(400, Jason.encode!(%{"errors" => %{"detail" => "invalid format"}}))
         |> halt()
     end
   end
