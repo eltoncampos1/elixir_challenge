@@ -9,7 +9,8 @@ defmodule CoreWeb.Auth.Adapters.AuthHandler.Guardian do
   def authenticate(%{"email" => email, "password" => password}) do
     case ClientRepository.authenticate(email, password) do
       {:ok, client} -> create_token(client)
-      _ -> {:error, :unauthorized}
+       _ ->
+        {:error, :unauthorized}
     end
   end
 
