@@ -5,8 +5,14 @@ defmodule CoreWeb.Plugs.UUIDChecker do
 
   def call(%Plug.Conn{params: %{"id" => id}} = conn, _default) do
     case Ecto.UUID.cast(id) do
-      {:ok, _uuid} -> conn
-      _ -> conn |> resp(401, Jason.encode!(%{"error" => "unauthorized"})) |> halt()
+      {:ok, _uuid} ->
+        conn
+
+      _ ->
+        conn
+        |> put_resp_content_type("Application/Json")
+        |> resp(401, Jason.encode!(%{"errors" => %{"detail" => "invalid format"}}))
+        |> halt()
     end
   end
 end

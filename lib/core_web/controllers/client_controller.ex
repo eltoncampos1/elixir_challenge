@@ -1,6 +1,6 @@
 defmodule CoreWeb.ClientController do
   use CoreWeb, :controller
-  plug CoreWeb.Plugs.UUIDChecker, :id when action in [:show]
+  plug CoreWeb.Plugs.UUIDChecker when action in [:show]
 
   action_fallback CoreWeb.FallbackController
 

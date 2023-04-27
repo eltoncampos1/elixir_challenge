@@ -141,6 +141,16 @@ defmodule CoreWeb.ClientControllerTest do
              } = response
     end
 
+    test "Should return error if user not found", %{conn: conn, client: client} do
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :show, Ecto.UUID.generate()))
+        |> json_response(404)
+
+      assert %{"errors" => %{"detail" => "Not Found"}} = response
+    end
+
     test "Should return error if not authenticated ", %{conn: conn} do
       response =
         conn
@@ -148,6 +158,24 @@ defmodule CoreWeb.ClientControllerTest do
         |> json_response(401)
 
       assert %{"error" => "unauthenticated"} = response
+    end
+
+    test "Should return error id is in wrong format", %{conn: conn, client: client} do
+      response1 =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :show, "invalid_id"))
+        |> json_response(401)
+
+      response2 =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :show, 1234))
+        |> json_response(401)
+
+      assert %{"errors" => %{"detail" => "invalid format"}} = response1
+
+      assert %{"errors" => %{"detail" => "invalid format"}} = response2
     end
   end
 
