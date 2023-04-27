@@ -2,13 +2,15 @@ defmodule CoreWeb.SessionControllerTest do
   use CoreWeb.ConnCase, async: true
 
   setup %{conn: conn} do
-    params = %{email: "valid@email.com", password: "1234567"}
+    params = %{email: "valid@email.com", password: "1234567", name: "username"}
     {:ok, client} = Core.create_client(params)
-    %{conn: conn, params: params, client: client}
+    %{conn: conn, client: client, params: params}
   end
 
   describe "authenticate/2" do
     test "should authenticate user with correct payload", %{conn: conn, params: params} do
+      params = %{email: params.email, password: params.password}
+
       response =
         conn
         |> post(Routes.session_path(conn, :authenticate), params)
@@ -17,6 +19,7 @@ defmodule CoreWeb.SessionControllerTest do
       assert %{
                "client" => %{
                  "email" => "valid@email.com",
+                 "name" => "username",
                  "id" => _
                },
                "token" => _

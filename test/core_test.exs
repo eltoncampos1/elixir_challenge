@@ -5,7 +5,8 @@ defmodule CoreTest do
 
   @valid_client_params %{
     email: "valid@email.com",
-    password: "12345678"
+    password: "12345678",
+    name: "core_user"
   }
 
   describe "Create client" do
@@ -18,7 +19,8 @@ defmodule CoreTest do
     test "error on create client if is not correct email format" do
       params = %{
         email: "invalid_email.com",
-        password: "1234567"
+        password: "1234567",
+        name: "username"
       }
 
       assert {
@@ -30,7 +32,8 @@ defmodule CoreTest do
     test "error on create client if password has invalid length" do
       params = %{
         email: "valid@email.com",
-        password: "1234"
+        password: "1234",
+        name: "username"
       }
 
       assert {

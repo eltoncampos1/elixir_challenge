@@ -4,7 +4,8 @@ defmodule CoreWeb.ClientView do
   def render("new.json", %{client: client}) do
     %{
       id: client.id,
-      email: client.email
+      email: client.email,
+      name: client.name
     }
   end
 end

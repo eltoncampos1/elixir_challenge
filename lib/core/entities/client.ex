@@ -1,10 +1,11 @@
 defmodule Core.Entities.Client do
   use Core.BaseSchema
 
-  @required [:email, :password]
+  @required [:name, :email, :password]
 
   schema "clients" do
     field :email, :string
+    field :name, :string
     field :password, :string, virtual: true
     field :password_hash, :string
 
