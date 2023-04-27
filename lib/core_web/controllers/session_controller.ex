@@ -9,10 +9,10 @@ defmodule CoreWeb.SessionController do
   action_fallback CoreWeb.FallbackController
 
   def authenticate(conn, %{"email" => _email, "password" => _pass} = params) do
-    with {:ok, %Client{} = client, token} <- AuthHandler.authenticate(params) do
+    with {:ok, %Client{} = _client, token} <- AuthHandler.authenticate(params) do
       conn
       |> put_status(201)
-      |> render("auth.json", %{client: client, token: token})
+      |> render("auth.json", %{token: token})
     end
   end
 

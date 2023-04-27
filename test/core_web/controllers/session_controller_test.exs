@@ -16,14 +16,7 @@ defmodule CoreWeb.SessionControllerTest do
         |> post(Routes.session_path(conn, :authenticate), params)
         |> json_response(201)
 
-      assert %{
-               "client" => %{
-                 "email" => "valid@email.com",
-                 "name" => "username",
-                 "id" => _
-               },
-               "token" => _
-             } = response
+      assert %{"token" => _} = response
     end
 
     test "should not authenticate user with incorrect payload", %{conn: conn} do
