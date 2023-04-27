@@ -3,8 +3,8 @@ defmodule CoreWeb.Auth.Pipeline do
 
   use Guardian.Plug.Pipeline,
     otp_app: :core,
-    module: Auth.Guardian,
-    error_handle: Auth.ErrorHandler
+    module: Auth.Adapters.AuthHandler.Guardian,
+    error_handler: Auth.ErrorHandler
 
   plug Guardian.Plug.VerifySession, claims: %{"typ" => "access"}
   plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}

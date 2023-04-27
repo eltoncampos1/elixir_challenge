@@ -14,7 +14,7 @@ defmodule CoreWeb.SessionController do
       |> put_status(201)
       |> render("new.json", %{client: client, token: token})
     end
-   end
+  end
 
   def authenticate(conn, _params) do
     conn

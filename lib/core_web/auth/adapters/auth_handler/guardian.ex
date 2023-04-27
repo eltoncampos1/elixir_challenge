@@ -8,8 +8,10 @@ defmodule CoreWeb.Auth.Adapters.AuthHandler.Guardian do
   @spec authenticate(map) :: {:error, :unauthorized} | {:ok, Core.Entities.Client.t(), binary}
   def authenticate(%{"email" => email, "password" => password}) do
     case ClientRepository.authenticate(email, password) do
-      {:ok, client} -> create_token(client)
-       _ ->
+      {:ok, client} ->
+        create_token(client)
+
+      _ ->
         {:error, :unauthorized}
     end
   end
