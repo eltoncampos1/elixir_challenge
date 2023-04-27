@@ -112,6 +112,45 @@ defmodule CoreWeb.ClientControllerTest do
     end
   end
 
+  describe "GET show/2" do
+    test "Should return user given id", %{conn: conn, client: client} do
+      %{
+        email: email,
+        name: name,
+        id: client_id,
+        address: %{cep: cep, id: address_id, number: number, state: state, city: city}
+      } = insert(:client)
+
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :show, client_id))
+        |> json_response(200)
+
+      assert %{
+               "address" => %{
+                 "cep" => ^cep,
+                 "city" => ^city,
+                 "id" => ^address_id,
+                 "number" => ^number,
+                 "state" => ^state
+               },
+               "email" => ^email,
+               "id" => ^client_id,
+               "name" => ^name
+             } = response
+    end
+
+    test "Should return error if not authenticated ", %{conn: conn} do
+      response =
+        conn
+        |> get(Routes.client_path(conn, :show, Ecto.UUID.generate()))
+        |> json_response(401)
+
+      assert %{"error" => "unauthenticated"} = response
+    end
+  end
+
   defp authenticate_user(conn, client) do
     {:ok, token, _} = CoreWeb.Auth.Adapters.AuthHandler.Guardian.encode_and_sign(client)
 
