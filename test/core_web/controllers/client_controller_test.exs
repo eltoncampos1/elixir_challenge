@@ -165,17 +165,80 @@ defmodule CoreWeb.ClientControllerTest do
         conn
         |> authenticate_user(client)
         |> get(Routes.client_path(conn, :show, "invalid_id"))
-        |> json_response(401)
+        |> json_response(400)
 
       response2 =
         conn
         |> authenticate_user(client)
         |> get(Routes.client_path(conn, :show, 1234))
-        |> json_response(401)
+        |> json_response(400)
 
       assert %{"errors" => %{"detail" => "invalid format"}} = response1
 
       assert %{"errors" => %{"detail" => "invalid format"}} = response2
+    end
+  end
+
+  describe "UPDATE edit/2" do
+    test "should be able to edit client params", %{conn: conn, client: client} do
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :edit, client.id), %{
+          email: "edit@email.com",
+          name: "edit"
+        })
+        |> json_response(201)
+
+      assert %{"email" => "edit@email.com", "id" => id, "name" => "edit"} = response
+
+      assert id == client.id
+      refute response["email"] == client.email
+      refute response["name"] == client.name
+    end
+
+    test "should return error if has invalid params", %{conn: conn, client: client} do
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :edit, client.id), %{email: "invalidemail.com"})
+        |> json_response(422)
+
+      assert %{"errors" => %{"email" => ["has invalid format"]}, "status" => "failure"} = response
+    end
+
+    test "should return error if has invalid id", %{conn: conn, client: client} do
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :edit, "invalid"))
+        |> json_response(400)
+
+      assert %{"errors" => %{"detail" => "invalid format"}} = response
+    end
+
+    test "should return error user not exists", %{conn: conn, client: client} do
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :edit, Ecto.UUID.generate()))
+        |> json_response(404)
+
+      assert %{"errors" => %{"detail" => "Not Found"}} = response
+    end
+
+    test "should return client if params that does not exists on schema has passed", %{
+      conn: conn,
+      client: %{id: id, email: email, name: name} = client
+    } do
+      response =
+        conn
+        |> authenticate_user(client)
+        |> get(Routes.client_path(conn, :edit, id), %{invalid_params: "invalid"})
+        |> json_response(201)
+
+      assert %{"email" => ^email, "id" => ^id, "name" => ^name} =
+               response
     end
   end
 
