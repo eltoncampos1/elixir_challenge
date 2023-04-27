@@ -193,4 +193,18 @@ defmodule CoreTest do
       assert {:error, :not_found} = Core.get_client_by_id(Ecto.UUID.generate)
     end
   end
+
+  describe "all_clients/0" do
+    test "should be able to return all clients" do
+      total = 10
+       for i <- 1..total, do: Core.create_client(%{email: "email-#{i}@email.com", name: "client #{i}", password: "123456"})
+
+      assert [%Client{} | _tail] = clients = Core.all_clients()
+      assert length(clients) == total
+    end
+
+    test "should return empty array in has no clients" do
+      assert [] = Core.all_clients()
+    end
+  end
 end

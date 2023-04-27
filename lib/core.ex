@@ -15,12 +15,12 @@ defmodule Core do
   defdelegate create_address(params), to: AddressRepository, as: :create
   defdelegate create_product(params), to: ProductRepository, as: :create
 
+  defdelegate get_client_by_id(id), to: ClientRepository, as: :get_by_id
   defdelegate get_client_by_id!(id), to: ClientRepository, as: :get_by_id!
 
   defdelegate signup(params), to: ClientRepository, as: :signup
 
   defdelegate all_clients, to: ClientRepository, as: :index
-  defdelegate get_client_by_id(id), to: ClientRepository, as: :get_by_id
 
   defdelegate update_client(client, params), to: ClientRepository, as: :update
 end
