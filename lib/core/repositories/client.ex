@@ -63,6 +63,7 @@ defmodule Core.Repositories.Client do
     end)
     |> Repo.transaction()
     |> handle_response()
+    |> IO.inspect()
   end
 
   defp handle_response({:ok, %{address: _address, client: client}}),

@@ -238,10 +238,106 @@ defmodule CoreTest do
     end
 
     test "should return error invalid client are passed" do
-      c_1 = insert(:client)
+      insert(:client)
       new_params = %{email: "new_email@email.com", name: "new_name"}
 
-      assert_raise Ecto.NoPrimaryKeyValueError, fn ->  Core.update_client(%Client{}, new_params) end
+      assert_raise Ecto.NoPrimaryKeyValueError, fn ->
+        Core.update_client(%Client{}, new_params)
+      end
+    end
+  end
+
+  describe "signup/1" do
+    test "should be able to signup a client" do
+      client = %{email: "email@email.com", name: "user-1", password: "1234567"}
+
+      address = params_for(:address) |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
+
+      params = %{"address" => address, "client" => client}
+
+      assert {:ok,
+              %Client{
+                email: email,
+                name: name,
+                address: %{cep: cep, number: number, city: city, state: state}
+              }} = Core.signup(params)
+
+      assert address["cep"] == cep
+      assert address["number"] == number
+      assert address["state"] == state
+      assert address["city"] == city
+      assert email == params["client"]["email"]
+      assert name == params["client"]["name"]
+    end
+
+    test "should return error on wrong params on client" do
+      client = %{email: "emailemail.com", name: "user-1", password: "1234"}
+
+      address = params_for(:address) |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
+
+      params = %{"address" => address, "client" => client}
+
+      assert {:error,
+              %Ecto.Changeset{
+                valid?: false,
+                errors: [
+                  email: {"has invalid format", [validation: :format]},
+                  password:
+                    {"should be at least %{count} character(s)",
+                     [count: 6, validation: :length, kind: :min, type: :string]}
+                ]
+              }} = Core.signup(params)
+    end
+
+    test "should return error on wrong params on address" do
+      client = %{email: "email@email.com", name: "user-1", password: "1234567"}
+
+      address = %{"cep" => "00000", "number" => "0", "state" => "SP", "city" => "SP"}
+
+      params = %{"address" => address, "client" => client}
+
+      assert {:error,
+              %Ecto.Changeset{
+                valid?: false,
+                errors: [
+                  cep:
+                    {"should be %{count} character(s)",
+                     [count: 8, validation: :length, kind: :is, type: :string]}
+                ]
+              }} = Core.signup(params)
+    end
+
+    test "should return error if required params are not supplied" do
+      client = %{}
+
+      client2 = %{email: "email@email.com", name: "user-1", password: "1234567"}
+      address = %{"cep" => "00000000", "number" => "0", "state" => "SP", "city" => "SP"}
+
+      addres2 = %{}
+
+      params = %{"address" => address, "client" => client}
+      params2 = %{"address" => addres2, "client" => client2}
+
+      assert {:error,
+              %Ecto.Changeset{
+                valid?: false,
+                errors: [
+                  name: {"can't be blank", [validation: :required]},
+                  email: {"can't be blank", [validation: :required]},
+                  password: {"can't be blank", [validation: :required]}
+                ]
+              }} = Core.signup(params)
+
+      assert {:error,
+              %Ecto.Changeset{
+                valid?: false,
+                errors: [
+                  cep: {"can't be blank", [validation: :required]},
+                  state: {"can't be blank", [validation: :required]},
+                  city: {"can't be blank", [validation: :required]},
+                  number: {"can't be blank", [validation: :required]}
+                ]
+              }} = Core.signup(params2)
     end
   end
 end
