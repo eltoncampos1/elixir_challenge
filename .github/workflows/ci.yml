@@ -1,9 +1,12 @@
 name: Elixir Build and Migrate
+on: 
+ push:
+    branches: [ main ]
+ pull_request:
+    branches: [ main ]
 env:
   MIX_ENV: test
   GUARDIAN_AUTH_TOKEN: ${{ secrets.GUARDIAN_AUTH_TOKEN }}
-
-on: pull_request
 
 jobs:
   build:
@@ -57,7 +60,7 @@ jobs:
         run: |
           mix compile --warnings-as-errors
 
-      - name: Migrate Base
+      - name: Migrate
         run: |
           mix ecto.create
           mix ecto.migrate
