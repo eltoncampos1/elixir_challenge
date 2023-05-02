@@ -16,6 +16,7 @@ defmodule CoreWeb.Auth.Adapters.AuthHandler.Guardian do
     end
   end
 
+  @spec subject_for_token(any, any) :: {:error, :reason_for_error} | {:ok, binary}
   def subject_for_token(%Client{} = client, _claims) do
     {:ok, to_string(client.id)}
   end
