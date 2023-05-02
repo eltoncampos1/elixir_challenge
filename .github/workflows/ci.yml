@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  MY_TOKEN: ${{ secrets.GUARDIAN_AUTH_TOKEN }}
+  GUARDIAN_AUTH_TOKEN: ${{ secrets.GUARDIAN_AUTH_TOKEN }}
 
 jobs:
   test:
