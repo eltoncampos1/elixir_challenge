@@ -1,0 +1,38 @@
+name: Check Format
+
+on: pull_request
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    env:
+      MIX_ENV: test
+      GUARDIAN_AUTH_TOKEN: ${{ secrets.GUARDIAN_AUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v1.0.0
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25.0.0
+          elixir-version: 1.13.4
+      - name: Get Deps Cache
+        uses: actions/cache@v2
+        id: deps
+        with:
+          path: deps/
+          key: ${{hashFiles('mix.lock')}}-deps
+
+      - name: Get Build Cache
+        uses: actions/cache@v2
+        with:
+          path: _build/
+          key: ${{runner.os}}-${{hashFiles('mix.lock')}}-build
+
+      - name: Get deps
+        if: steps.deps.outputs.cache-hit != 'true'
+        run: |
+          mix deps.get
+
+      - name: Check format
+        run: |
+          mix format --check-formatted
