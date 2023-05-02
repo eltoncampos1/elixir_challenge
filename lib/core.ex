@@ -17,6 +17,7 @@ defmodule Core do
 
   defdelegate get_client_by_id(id), to: ClientRepository, as: :get_by_id
   defdelegate get_client_by_id!(id), to: ClientRepository, as: :get_by_id!
+  defdelegate get_client_by_email(email), to: ClientRepository, as: :get_by_email
 
   defdelegate signup(params), to: ClientRepository, as: :signup
 

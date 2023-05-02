@@ -266,8 +266,8 @@ defmodule CoreTest do
       assert address["number"] == number
       assert address["state"] == state
       assert address["city"] == city
-      assert email == params["client"]["email"]
-      assert name == params["client"]["name"]
+      assert email == client.email
+      assert name == client.name
     end
 
     test "should return error on wrong params on client" do

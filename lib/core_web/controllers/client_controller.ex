@@ -36,4 +36,13 @@ defmodule CoreWeb.ClientController do
       |> render("edit.json", client: updated_client)
     end
   end
+
+  def validate(conn, %{"email" => email}) do
+    case Core.get_client_by_email(email) do
+      %Core.Entities.Client{} -> {:error, :already_exists}
+      _ ->  conn
+      |> put_status(:ok)
+      |> json(%{valid: true})
+    end
+  end
 end

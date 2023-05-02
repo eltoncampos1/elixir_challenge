@@ -241,6 +241,18 @@ defmodule CoreWeb.ClientControllerTest do
     end
   end
 
+
+  describe "validate/2" do
+    test "shoul return valid if no client already exist with same email", %{conn: conn} do
+      response =
+      conn
+      |> post(Routes.client_path(conn, :validate), %{email: "new-email@email.com"})
+      |> json_response(200)
+
+      assert %{"valid" => true} = response
+    end
+  end
+
   defp authenticate_user(conn, client) do
     {:ok, token, _} = CoreWeb.Auth.Adapters.AuthHandler.Guardian.encode_and_sign(client)
 

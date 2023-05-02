@@ -36,6 +36,10 @@ defmodule Core.Repositories.Client do
     Repo.get!(Client, id)
   end
 
+  def get_by_email(email) do
+    Repo.get_by(Client, [email: email])
+  end
+
   def authenticate(email, password) do
     Repo.get_by(Client, email: email)
     |> verify_hash(password)
@@ -63,7 +67,6 @@ defmodule Core.Repositories.Client do
     end)
     |> Repo.transaction()
     |> handle_response()
-    |> IO.inspect()
   end
 
   defp handle_response({:ok, %{address: _address, client: client}}),

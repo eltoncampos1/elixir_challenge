@@ -14,6 +14,7 @@ defmodule CoreWeb.Router do
 
     post "/signup", ClientController, :signup
     post "/session", SessionController, :authenticate
+    post "/validate", ClientController, :validate
 
     scope "/" do
       pipe_through :auth
